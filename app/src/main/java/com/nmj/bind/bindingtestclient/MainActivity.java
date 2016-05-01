@@ -4,20 +4,23 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
-import com.nmj.bind.bindingtestserver.ICountService;
+import com.nmj.bind.bindingtestserver.INmgGame;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     Messenger mService = null;
-    ICountService mBinder = null;
+    INmgGame mBinder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +61,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn2() {
-//        bindService(new Intent(this, MessengerService.class), mConnection,
-//                Context.BIND_AUTO_CREATE);
-
-//        Intent i = new Intent("com.nmj.bind.bindingtestserver.service.CountService");
-//        Intent i = new Intent(IRemoteService.class.getName());
-        Intent i = new Intent().setAction("com.nmj.bind.bindingtestserver.service.CountService");
-//        i.setPackage("com.nmj.bind.bindingtestserver");
-        boolean bb = bindService(i, mConnection, Context.BIND_AUTO_CREATE);
-        Log.i("nmj7", "bindService ret : " + bb);
 
     }
 
@@ -75,33 +69,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn4() {
+        // bind to NmgGameService
+        Intent i = new Intent();
+        i.setComponent(new ComponentName("com.nmj.bind.bindingtestserver", "com.nmj.bind.bindingtestserver.service.NmgGameService"));
+        boolean bb = bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+        Log.i("nmj7", "bindService ret : " + bb);
 
     }
 
     public void btn5() {
+        if (mBinder == null)
+            return;
 
+        try {
+            int nCnt = mBinder.getGameCount();
+            List<String> gameList = mBinder.getGameList();
+            String text = String.format("총 %d개의 게임 서비스\n" + gameList.toString(), nCnt, gameList);
+            Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.i("nmj7", "mConnection.onServiceConnected");
-            // This is called when the connection with the service has been
-            // established, giving us the object we can use to
-            // interact with the service.  We are communicating with the
-            // service using a Messenger, so here we get a client-side
-            // representation of that from the raw IBinder object.
-//            mService = new Messenger(service);
-//            IRemoteService.Stub.asInterface(service);
-
-            mBinder = ICountService.Stub.asInterface(service);
+            mBinder = INmgGame.Stub.asInterface(service);
         }
 
         public void onServiceDisconnected(ComponentName className) {
             Log.i("nmj7", "mConnection.onServiceDisconnected");
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            mService = null;
+            mBinder = null;
         }
     };
 }
