@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
@@ -65,7 +66,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn3() {
+//        Intent intent = new Intent();
+//        intent.setComponent(new ComponentName("com.nmj.bind.bindingtestserver", "com.nmj.bind.bindingtestserver.LoginActivity"));
+//        startActivityForResult(intent, 55);
 
+        Intent intent = new Intent();
+        intent.setAction("my_login_abcd");
+        ResolveInfo resolveInfo = MainActivity.this.getPackageManager()
+                .resolveActivity(intent, 0);
+        startActivityForResult(intent, 100);
     }
 
     public void btn4() {
@@ -103,4 +112,17 @@ public class MainActivity extends AppCompatActivity {
             mBinder = null;
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Log.i("nmj7", "onActivityResult RESULT_OK");
+            String key = data.getStringExtra("key");
+            Log.i("nmj7", "key : " + key);
+        } else if (resultCode == RESULT_CANCELED){
+            Log.i("nmj7", "onActivityResult RESULT_CANCELED");
+        }
+    }
 }

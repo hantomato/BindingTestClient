@@ -35,7 +35,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="btn3"
+        android:text="btn3 - popup remote Activity"
         android:id="@+id/button3"
         android:onClick="onClick"
         android:layout_marginLeft="27dp"
@@ -43,7 +43,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="btn4"
+        android:text="btn4 - bindService"
         android:id="@+id/button4"
         android:onClick="onClick"
         android:layout_marginLeft="27dp"
@@ -51,7 +51,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="btn5"
+        android:text="btn5 - call api(of service)"
         android:id="@+id/button5"
         android:onClick="onClick"
         android:layout_marginLeft="27dp"
